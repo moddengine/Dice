@@ -42,8 +42,8 @@ class Y3 extends Y2
 }
 
 class Y
-
-    {public $name;
+{
+    public $name;
 
     public function __construct($name)
     {

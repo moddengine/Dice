@@ -124,8 +124,8 @@ class SubstitutionsTest extends DiceTest
 }
 
 class Foo
-
-    {public $bar;
+{
+    public $bar;
 
     public function __construct(Bar $bar)
     {

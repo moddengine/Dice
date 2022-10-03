@@ -194,7 +194,7 @@ class someotherclass
 
 class TenParameters
 {
-    /** @var string[]  */
+    /** @var string[] */
     public $params = [];
 
     public function __construct(
