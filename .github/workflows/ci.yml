@@ -30,6 +30,6 @@ jobs:
             - name: Report Coverage
               run: php vendor/bin/php-coveralls --coverage_clover=clover.xml -v
               env:
-                COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
                 COVERALLS_PARALLEL: true
                 COVERALLS_FLAG_NAME: "PHP${{matrix.php}}"
