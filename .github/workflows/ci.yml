@@ -1,0 +1,29 @@
+name: Dice CI
+
+on:
+    push:
+    pull_request:
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        strategy:
+            matrix:
+                php: [ '7.1', '7.4', '8.0', '8,1' ]
+
+        steps:
+            - name: Setup PHP with PECL extension
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ matrix.php }}
+
+            - name: Install PHP Dependancies
+              run: composer install && mkdir -p build/logs
+            - name: Run tests with coverage
+              env:
+                XDEBUG_MODE: coverage
+              run: composer test-coverage
+            - name: Report Coverage
+              run: php vendor/bin/php-coveralls
+
