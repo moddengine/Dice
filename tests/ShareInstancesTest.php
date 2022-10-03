@@ -24,8 +24,8 @@ class ShareInstancesTest extends DiceTest
         $this->assertSame(
             $shareTest->share1->shared,
             $shareTest->share2->shared
-
-        );$this->assertEquals(
+        );
+        $this->assertEquals(
             $shareTest->shared->uniq,
             $shareTest->share1->shared->uniq
         );
@@ -123,7 +123,6 @@ class ShareInstancesTest extends DiceTest
             $shareTest2->share1->shared->uniq,
             $shareTest2->share2->shared->uniq
         );
-    }
 
         $this->assertNotSame($shareTest->shared, $shareTest2->shared);
         $this->assertNotSame(

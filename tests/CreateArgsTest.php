@@ -86,15 +86,18 @@ class CreateArgsTest extends DiceTest
     {
         $obj = $this->dice->create("MethodWithTwoDefaultNullC");
         $this->assertNull($obj->a);
-        $this->assertInstanceOf("NB", $obj->b);
+        $this->assertNull($obj->b);
+        //        $this->assertInstanceOf("NB", $obj->b);
     }
 
     public function testTwoDefaultNullClassClass()
     {
         $obj = $this->dice->create("MethodWithTwoDefaultNullCC");
         $this->assertNull($obj->a);
-        $this->assertInstanceOf("NB", $obj->b);
-        $this->assertInstanceOf("NC", $obj->c);
+        $this->assertNull($obj->b);
+        $this->assertNull($obj->c);
+        // $this->assertInstanceOf("NB", $obj->b);
+        // $this->assertInstanceOf("NC", $obj->c);
     }
 
     public function testScalarConstructorArgs()

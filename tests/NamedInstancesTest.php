@@ -145,7 +145,9 @@ class NamedInstancesTest extends DiceTest
         $dice = $dice->addRule('$MyInstance', $rule2);
 
         $this->assertEquals($rule2, $dice->getRule('$MyInstance'));
-    }public function testNamedMultipleSharedInstances()
+    }
+
+    public function testNamedMultipleSharedInstances()
     {
         $dice = new Dice\Dice();
         $p1 = 'mysql:host=$host;port=$port;dbname=$name;charset=utf8mb4';

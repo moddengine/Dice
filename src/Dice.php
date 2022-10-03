@@ -204,7 +204,7 @@ class Dice
                 ) {
                     //Internal classes may not be able to be constructed without calling the constructor and will not suffer from #7, construct them normally.
                     if ($class->isInternal()) {
-                        $this->instances[$class->name] = $this->instances[
+                        $this->instances[$name] = $this->instances[
                             "\\" . $class->name
                         ] = $closure($args, $share);
                     } else {
@@ -334,9 +334,9 @@ class Dice
     }
 
     /**
-	* Looks through the array $search for any object which can be used to fulfil $param
-	* The original array $search is modifed so must be passed by reference.
-	*/
+     * Looks through the array $search for any object which can be used to fulfil $param
+     * The original array $search is modifed so must be passed by reference.
+     */
     private function matchParam(
         \ReflectionParameter $param,
         $class,
@@ -367,8 +367,7 @@ class Dice
         foreach ($method->getParameters() as $param) {
             $pType = $param->getType();
             $class =
-                ($pType instanceof \ReflectionNamedType &&
-                !$pType->isBuiltin())
+                $pType instanceof \ReflectionNamedType && !$pType->isBuiltin()
                     ? $pType->getName()
                     : null;
             $paramInfo[] = [
