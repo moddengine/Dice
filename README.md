@@ -38,7 +38,7 @@ class B {
 }
 
 require_once 'Dice.php';
-$dice = new \Dice\Dice;
+$dice = new Dice\Dice;
 
 $a = $dice->create('A');
 
@@ -226,7 +226,7 @@ As noted in issue #125 this made it impossible to pass an array to a constructor
 
 ```php
 $dice->addRule('ClassName', [
-	'constructParams' => [\Dice\Dice::INSTANCE => '$NamedPDOInstance']
+	'constructParams' => [Dice\Dice::INSTANCE => '$NamedPDOInstance']
 ]);
 ```
 _to make the constant shorter to type out, you can `use \Dice\Dice;` and reference `Dice::INSTANCE`_
@@ -359,7 +359,7 @@ $rule->constructParams[] =  ['instance' => function() { {
 * Please note: CHANGES ARE NOT BACKWARDS COMPATIBLE. However they are easily fixed by doing the following find/replaces:
 
 ```php
-	new Dice => new \Dice\Dice
+	new Dice => new Dice\Dice
 	new DiceInstance => new \Dice\Instance
 	new DiceRule => new \Dice\Rule
 ```
