@@ -4,7 +4,6 @@
  * @author Tom Butler tom@r.je *
  * @copyright 2012-2018 Tom Butler <tom@r.je> | https:// r.je/dice.html *
  * @license http:// www.opensource.org/licenses/bsd-license.php BSD License *
- * @version 3.0
  */
 class SubstitutionsTest extends DiceTest
 {
@@ -12,7 +11,7 @@ class SubstitutionsTest extends DiceTest
     {
         $rule = [];
         $rule["substitutions"]["Bar77"] = [
-            Dice\Dice::INSTANCE => function () {
+            \Dice\Dice::INSTANCE => function () {
                 return Baz77::create();
             },
         ];
@@ -125,8 +124,8 @@ class SubstitutionsTest extends DiceTest
 }
 
 class Foo
-{
-    public $bar;
+
+    {public $bar;
 
     public function __construct(Bar $bar)
     {

@@ -3,7 +3,6 @@
  * @author Tom Butler tom@r.je
  * @copyright 2012-2020 Tom Butler <tom@r.je> | https://r.je/dice
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
- * @version 4.0
  */
 
 namespace Dice;
@@ -113,11 +112,17 @@ class Dice
 
     /**
      * Returns a fully constructed object based on $name using $args and $share as constructor arguments if supplied
-     * @param string name The name of the class to instantiate
+     * @template T
+
+     * @param string $name The name of the class to instantiate
+     * @psalm-param class-string<T> $name
      * @param array $args An array with any additional arguments to be passed into the constructor upon instantiation
      * @param array $share a list of defined in shareInstances for objects higher up the object graph, should only be used internally
+
      * @return object A fully constructed object based on the specified input arguments
+     * @psalm-return T
      */
+
     public function create(string $name, array $args = [], array $share = [])
     {
         // Is there a shared instance set? Return it. Better here than a closure for this, calling a closure is slower.
@@ -145,78 +150,91 @@ class Dice
      */
     private function getClosure(string $name, array $rule)
     {
-        // Reflect the class and constructor, this should only ever be done once per class and get cached
-        $class = new \ReflectionClass(
-            isset($rule["instanceOf"]) ? $rule["instanceOf"] : $name
-        );
-        $constructor = $class->getConstructor();
-
-        // Create parameter generating function in order to cache reflection on the parameters. This way $reflect->getParameters() only ever gets called once
-        $params = $constructor ? $this->getParams($constructor, $rule) : null;
-        //PHP throws a fatal error rather than an exception when trying to instantiate an interface, detect it and throw an exception instead
-        if ($class->isInterface()) {
-            $closure = function () {
-                throw new \InvalidArgumentException(
-                    "Cannot instantiate interface"
-                );
-            };
-        }
-        // Get a closure based on the type of object being created: Shared, normal or constructorless
-        elseif ($params) {
-            $closure = function (array $args, array $share) use (
-                $class,
-                $params
-            ) {
-                // This class has depenencies, call the $params closure to generate them based on $args and $share
-                return new $class->name(...$params($args, $share));
-            };
+        if (
+            ($rule["instanceOf"] ?? false) &&
+            !empty($rule["call"]) &&
+            ($this->getRule($rule["instanceOf"])["shared"] ?? false)
+        ) {
+            $className = $rule["instanceOf"];
+            $class = new \ReflectionClass($className);
+            $closure = $this->getClosure(
+                $className,
+                $this->getRule($className)
+            );
         } else {
-            $closure = function () use ($class) {
-                // No constructor arguments, just instantiate the class
-                return new $class->name();
-            };
-        }
+            // Reflect the class and constructor, this should only ever be done once per class and get cached
+            $class = new \ReflectionClass($rule["instanceOf"] ?? $name);
+            $constructor = $class->getConstructor();
 
-        if (!empty($rule["shared"])) {
-            $closure = function (array $args, array $share) use (
-                $class,
-                $name,
-                $constructor,
-                $params,
-                $closure
-            ) {
-                //Internal classes may not be able to be constructed without calling the constructor and will not suffer from #7, construct them normally.
-                if ($class->isInternal()) {
-                    $this->instances[$class->name] = $this->instances[
-                        "\\" . $class->name
-                    ] = $closure($args, $share);
-                } else {
-                    //Otherwise, create the class without calling the constructor (and write to \$name and $name, see issue #68)
-                    $this->instances[$name] = $this->instances[
-                        "\\" . $name
-                    ] = $class->newInstanceWithoutConstructor();
-                    // Now call this constructor after constructing all the dependencies. This avoids problems with cyclic references (issue #7)
-                    if ($constructor) {
-                        $constructor->invokeArgs(
-                            $this->instances[$name],
-                            $params($args, $share)
-                        );
+            // Create parameter generating function in order to cache reflection on the parameters. This way $reflect->getParameters() only ever gets called once
+            $params = $constructor
+                ? $this->getParams($constructor, $rule)
+                : null;
+            //PHP throws a fatal error rather than an exception when trying to instantiate an interface, detect it and throw an exception instead
+            if ($class->isInterface()) {
+                $closure = function () {
+                    throw new \InvalidArgumentException(
+                        "Cannot instantiate interface"
+                    );
+                };
+            }
+            // Get a closure based on the type of object being created: Shared, normal or constructorless
+            elseif ($params) {
+                $closure = function (array $args, array $share) use (
+                    $class,
+                    $params
+                ) {
+                    // This class has depenencies, call the $params closure to generate them based on $args and $share
+                    return new $class->name(...$params($args, $share));
+                };
+            } else {
+                $closure = function () use ($class) {
+                    // No constructor arguments, just instantiate the class
+                    return new $class->name();
+                };
+            }
+
+            if (!empty($rule["shared"])) {
+                $closure = function (array $args, array $share) use (
+                    $class,
+                    $name,
+                    $constructor,
+                    $params,
+                    $closure
+                ) {
+                    //Internal classes may not be able to be constructed without calling the constructor and will not suffer from #7, construct them normally.
+                    if ($class->isInternal()) {
+                        $this->instances[$class->name] = $this->instances[
+                            "\\" . $class->name
+                        ] = $closure($args, $share);
+                    } else {
+                        //Otherwise, create the class without calling the constructor (and write to \$name and $name, see issue #68)
+                        $this->instances[$name] = $this->instances[
+                            "\\" . $name
+                        ] = $class->newInstanceWithoutConstructor();
+                        // Now call this constructor after constructing all the dependencies. This avoids problems with cyclic references (issue #7)
+                        if ($constructor) {
+                            $constructor->invokeArgs(
+                                $this->instances[$name],
+                                $params($args, $share)
+                            );
+                        }
                     }
-                }
-                return $this->instances[$name];
-            };
-        }
-        // If there are shared instances, create them and merge them with shared instances higher up the object graph
-        if (isset($rule["shareInstances"])) {
-            $closure = function (array $args, array $share) use (
-                $closure,
-                $rule
-            ) {
-                foreach ($rule["shareInstances"] as $instance) {
-                    $share[] = $this->create($instance, [], $share);
-                }
-                return $closure($args, $share);
-            };
+                    return $this->instances[$name];
+                };
+            }
+            // If there are shared instances, create them and merge them with shared instances higher up the object graph
+            if (isset($rule["shareInstances"])) {
+                $closure = function (array $args, array $share) use (
+                    $closure,
+                    $rule
+                ) {
+                    foreach ($rule["shareInstances"] as $instance) {
+                        $share[] = $this->create($instance, [], $share);
+                    }
+                    return $closure($args, $share);
+                };
+            }
         }
         // When $rule['call'] is set, wrap the closure in another closure which will call the required methods after constructing the object
         // By putting this in a closure, the loop is never executed unless call is actually set
@@ -316,9 +334,9 @@ class Dice
     }
 
     /**
-     * Looks through the array $search for any object which can be used to fulfil $param
-     * The original array $search is modifed so must be passed by reference.
-     */
+	* Looks through the array $search for any object which can be used to fulfil $param
+	* The original array $search is modifed so must be passed by reference.
+	*/
     private function matchParam(
         \ReflectionParameter $param,
         $class,
@@ -336,7 +354,6 @@ class Dice
         }
         return false;
     }
-
     /**
      * Returns a closure that generates arguments for $method based on $rule and any $args passed into the closure
      * @param object $method An instance of ReflectionMethod (see: {@link http:// php.net/manual/en/class.reflectionmethod.php})
@@ -348,13 +365,12 @@ class Dice
         // Cache some information about the parameter in $paramInfo so (slow) reflection isn't needed every time
         $paramInfo = [];
         foreach ($method->getParameters() as $param) {
-            $type = $param->getType();
-
+            $pType = $param->getType();
             $class =
-                $type instanceof \ReflectionNamedType && !$type->isBuiltIn()
-                    ? $type->getName()
+                ($pType instanceof \ReflectionNamedType &&
+                !$pType->isBuiltin())
+                    ? $pType->getName()
                     : null;
-
             $paramInfo[] = [
                 $class,
                 $param,
@@ -380,7 +396,7 @@ class Dice
             $parameters = [];
 
             // Fnd a value for each method argument
-            foreach ($paramInfo as list($class, $param, $sub)) {
+            foreach ($paramInfo as [$class, $param, $sub]) {
                 // Loop through $args and see whether or not each value can match the current parameter based on type hint
                 if (
                     $args &&

@@ -4,7 +4,6 @@
  * @author Tom Butler tom@r.je *
  * @copyright 2012-2018 Tom Butler <tom@r.je> | https:// r.je/dice.html *
  * @license http:// www.opensource.org/licenses/bsd-license.php BSD License *
- * @version 3.0
  */
 class NoConstructor
 {
@@ -190,5 +189,37 @@ class someotherclass
     public function __construct(someclass $obj)
     {
         $this->obj = $obj;
+    }
+}
+
+class TenParameters
+{
+    /** @var string[]  */
+    public $params = [];
+
+    public function __construct(
+        string $one,
+        string $two,
+        string $three,
+        string $four,
+        string $five,
+        string $six,
+        string $seven,
+        string $eight,
+        string $nine,
+        string $ten
+    ) {
+        $this->params = [
+            $one,
+            $two,
+            $three,
+            $four,
+            $five,
+            $six,
+            $seven,
+            $eight,
+            $nine,
+            $ten,
+        ];
     }
 }

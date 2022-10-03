@@ -4,7 +4,6 @@
  * @author Tom Butler tom@r.je *
  * @copyright 2012-2018 Tom Butler <tom@r.je> | https:// r.je/dice.html *
  * @license http:// www.opensource.org/licenses/bsd-license.php BSD License *
- * @version 3.0
  */
 class Z
 {
@@ -43,8 +42,8 @@ class Y3 extends Y2
 }
 
 class Y
-{
-    public $name;
+
+    {public $name;
 
     public function __construct($name)
     {

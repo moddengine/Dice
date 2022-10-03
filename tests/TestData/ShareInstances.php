@@ -4,7 +4,6 @@
  * @author Tom Butler tom@r.je *
  * @copyright 2012-2018 Tom Butler <tom@r.je> | https:// r.je/dice.html *
  * @license http:// www.opensource.org/licenses/bsd-license.php BSD License *
- * @version 3.0
  */
 class TestSharedInstancesTop
 {
@@ -99,4 +98,25 @@ class Shared
     {
         $this->uniq = uniqid();
     }
+}
+
+class SharedInstanceFactory
+{
+    public $shInst = null;
+
+    public function factory(): SharedInstance
+    {
+        if (!$this->shInst) {
+            $this->shInst = new SharedInstance();
+        }
+        return $this->shInst;
+    }
+}
+
+interface SharedInstanceInterface
+{
+}
+
+class SharedInstance implements SharedInstanceInterface
+{
 }

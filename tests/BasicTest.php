@@ -3,7 +3,6 @@
  * @author Tom Butler tom@r.je *
  * @copyright 2012-2018 Tom Butler <tom@r.je> | https:// r.je/dice.html *
  * @license http:// www.opensource.org/licenses/bsd-license.php BSD License *
- * @version 3.0
  */
 
 class BasicTest extends DiceTest
@@ -197,7 +196,9 @@ class BasicTest extends DiceTest
     public function testPassConstantString()
     {
         $dice = $this->dice->addRule("CheckConstructorArgs", [
-            "constructParams" => [[Dice\Dice::CONSTANT => "\PDO::FETCH_ASSOC"]],
+            "constructParams" => [
+                [\Dice\Dice::CONSTANT => "\PDO::FETCH_ASSOC"],
+            ],
         ]);
 
         $obj = $dice->create("CheckConstructorArgs");
@@ -234,5 +235,26 @@ class BasicTest extends DiceTest
         $a = $dice->create("\someclass");
 
         $this->assertSame($a, $b->obj);
+    }
+
+    public function testParamOrder()
+    {
+        $oneToTen = [
+            "one",
+            "two",
+            "three",
+            "four",
+            "five",
+            "six",
+            "seven",
+            "eight",
+            "nine",
+            "ten",
+        ];
+        $dice = $this->dice->addRule(\TenParameters::class, [
+            "constructParams" => $oneToTen,
+        ]);
+        $a = $dice->create(TenParameters::class);
+        $this->assertEquals($a->params, $oneToTen);
     }
 }

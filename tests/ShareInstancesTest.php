@@ -4,7 +4,6 @@
  * @author Tom Butler tom@r.je *
  * @copyright 2012-2018 Tom Butler <tom@r.je> | https:// r.je/dice.html *
  * @license http:// www.opensource.org/licenses/bsd-license.php BSD License *
- * @version 3.0
  */
 class ShareInstancesTest extends DiceTest
 {
@@ -25,8 +24,8 @@ class ShareInstancesTest extends DiceTest
         $this->assertSame(
             $shareTest->share1->shared,
             $shareTest->share2->shared
-        );
-        $this->assertEquals(
+
+        );$this->assertEquals(
             $shareTest->shared->uniq,
             $shareTest->share1->shared->uniq
         );
@@ -124,6 +123,7 @@ class ShareInstancesTest extends DiceTest
             $shareTest2->share1->shared->uniq,
             $shareTest2->share2->shared->uniq
         );
+    }
 
         $this->assertNotSame($shareTest->shared, $shareTest2->shared);
         $this->assertNotSame(
@@ -138,5 +138,21 @@ class ShareInstancesTest extends DiceTest
             $shareTest->share1->shared->uniq,
             $shareTest2->share2->shared->uniq
         );
+    }
+
+    public function testSharedInstanceFactory()
+    {
+        $dice = new Dice\Dice();
+        $dice = $dice->addRule(SharedInstanceFactory::class, [
+            "shared" => true,
+        ]);
+        $dice = $dice->addRule(SharedInstanceInterface::class, [
+            "shared" => true,
+            "instanceOf" => SharedInstanceFactory::class,
+            "call" => [["factory", [], Dice\Dice::CHAIN_CALL]],
+        ]);
+        $in1 = $dice->create(SharedInstanceInterface::class);
+        $in2 = $dice->create(SharedInstanceFactory::class)->factory();
+        $this->assertSame($in1, $in2);
     }
 }

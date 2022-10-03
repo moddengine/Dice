@@ -4,7 +4,6 @@
  * @author Tom Butler tom@r.je *
  * @copyright 2012-2018 Tom Butler <tom@r.je> | https:// r.je/dice.html *
  * @license http:// www.opensource.org/licenses/bsd-license.php BSD License *
- * @version 3.0
  */
 class ChainTest extends DiceTest
 {
@@ -13,7 +12,7 @@ class ChainTest extends DiceTest
         $dice = $this->dice->addRules([
             '$someClass' => [
                 "instanceOf" => "Factory",
-                "call" => [["get", [], Dice\Dice::CHAIN_CALL]],
+                "call" => [["get", [], \Dice\Dice::CHAIN_CALL]],
             ],
         ]);
 
