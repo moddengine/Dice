@@ -36,4 +36,4 @@ jobs:
                 with:
                     timeout_seconds: 60
                     max_attempts: 3
-                    command: php vendor/bin/php-coveralls -x clover.xml -v
+                    command: php vendor/bin/php-coveralls -x clover.xml -o coveralls-upload.json -v
