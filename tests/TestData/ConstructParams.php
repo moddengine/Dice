@@ -117,12 +117,14 @@ class NullableClassTypeHint
     }
 }
 
-if (version_compare(PHP_VERSION, '8.0.0', '>=')) {
-	class UnionScalar {
-		public $a;
+if (version_compare(PHP_VERSION, "8.0.0", ">=")) {
+    class UnionScalar
+    {
+        public $a;
 
-		public function __construct(int|string $a) {
-			$this->a = $a;
-	    }
-	}
+        public function __construct(int|string $a)
+        {
+            $this->a = $a;
+        }
+    }
 }
