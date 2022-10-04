@@ -85,7 +85,6 @@ class MethodWithTwoDefaultNullC
 {
     public $a;
     public $b;
-
     public function __construct($a = null, NB $b = null)
     {
         $this->a = $a;
@@ -98,7 +97,6 @@ class MethodWithTwoDefaultNullCC
     public $a;
     public $b;
     public $c;
-
     public function __construct($a = null, NB $b = null, NC $c = null)
     {
         $this->a = $a;

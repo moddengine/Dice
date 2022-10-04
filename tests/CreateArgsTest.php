@@ -106,4 +106,17 @@ class CreateArgsTest extends DiceTest
         $this->assertEquals("string", $obj->string);
         $this->assertEquals(null, $obj->null);
     }
+
+    public function testUnionScalarConstructorArgs()
+    {
+        if (version_compare(PHP_VERSION, "8.0.0", ">=")) {
+            require_once __DIR__ . "/TestData/UnionParameters.php";
+            $unionScalar = $this->dice->create("UnionScalar", ["someString"]);
+            $this->assertEquals("someString", $unionScalar->a);
+        } else {
+            $this->markTestSkipped(
+                "PHP < 8.0.0 does not support union type hints"
+            );
+        }
+    }
 }
