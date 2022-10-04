@@ -85,7 +85,6 @@ class MethodWithTwoDefaultNullC
 {
     public $a;
     public $b;
-
     public function __construct($a = null, NB $b = null)
     {
         $this->a = $a;
@@ -98,7 +97,6 @@ class MethodWithTwoDefaultNullCC
     public $a;
     public $b;
     public $c;
-
     public function __construct($a = null, NB $b = null, NC $c = null)
     {
         $this->a = $a;
@@ -114,17 +112,5 @@ class NullableClassTypeHint
     public function __construct(?D $obj)
     {
         $this->obj = $obj;
-    }
-}
-
-if (version_compare(PHP_VERSION, "8.0.0", ">=")) {
-    class UnionScalar
-    {
-        public $a;
-
-        public function __construct(int|string $a)
-        {
-            $this->a = $a;
-        }
     }
 }

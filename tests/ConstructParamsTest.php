@@ -150,6 +150,7 @@ class ConstructParamsTest extends DiceTest
     public function testUnionScalarTypeHint()
     {
         if (version_compare(PHP_VERSION, "8.0.0", ">=")) {
+            require_once __DIR__ . "/TestData/UnionParameters.php";
             $rule = [];
             $rule["constructParams"] = ["someString"];
             $dice = $this->dice->addRule("UnionScalar", $rule);
