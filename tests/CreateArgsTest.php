@@ -20,15 +20,15 @@ class CreateArgsTest extends DiceTest
     public function testConstructArgs()
     {
         $obj = $this->dice->create("RequiresConstructorArgsA", ["foo", "bar"]);
-        $this->assertEquals($obj->foo, "foo");
-        $this->assertEquals($obj->bar, "bar");
+        $this->assertEquals("foo", $obj->foo);
+        $this->assertEquals("bar", $obj->bar);
     }
 
     public function testConstructArgsMixed()
     {
         $obj = $this->dice->create("RequiresConstructorArgsB", ["foo", "bar"]);
-        $this->assertEquals($obj->foo, "foo");
-        $this->assertEquals($obj->bar, "bar");
+        $this->assertEquals("foo", $obj->foo);
+        $this->assertEquals("bar", $obj->bar);
         $this->assertInstanceOf("A", $obj->a);
     }
 
@@ -46,7 +46,7 @@ class CreateArgsTest extends DiceTest
         ]);
         $this->assertInstanceOf("B", $a2->b);
         $this->assertInstanceOf("C", $a2->c);
-        $this->assertEquals($a2->foo, "Foo");
+        $this->assertEquals("Foo", $a2->foo);
     }
 
     public function testCreateArgs3()
@@ -58,7 +58,7 @@ class CreateArgsTest extends DiceTest
         ]);
         $this->assertInstanceOf("B", $a2->b);
         $this->assertInstanceOf("C", $a2->c);
-        $this->assertEquals($a2->foo, "Foo");
+        $this->assertEquals("Foo", $a2->foo);
     }
 
     public function testCreateArgs4()
@@ -69,7 +69,7 @@ class CreateArgsTest extends DiceTest
         ]);
         $this->assertInstanceOf("B", $a2->b);
         $this->assertInstanceOf("C", $a2->c);
-        $this->assertEquals($a2->foo, "Foo");
+        $this->assertEquals("Foo", $a2->foo);
     }
 
     public function testBestMatch()
@@ -117,6 +117,7 @@ class CreateArgsTest extends DiceTest
             $this->markTestSkipped(
                 "PHP < 8.0.0 does not support union type hints"
             );
+        }
     }
 
       /**
