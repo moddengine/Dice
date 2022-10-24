@@ -449,8 +449,7 @@ class Dice
                                 )
                             ) {
                                 $parameters[] = array_splice($args, $i, 1)[0];
-                                $i--;
-                                break;
+                                break 2;
                             }
                         }
                     }
