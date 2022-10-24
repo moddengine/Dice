@@ -434,7 +434,7 @@ class Dice
                     $type = $param->getType();
                     if ($type instanceof \ReflectionNamedType) {
                         $types = [$type];
-                    } elseif (
+                    } /** @noinspection PhpElementIsNotAvailableInCurrentPhpVersionInspection */ elseif (
                         version_compare(PHP_VERSION, "8.0.0", ">=") &&
                         $type instanceof \ReflectionUnionType
                     ) {
