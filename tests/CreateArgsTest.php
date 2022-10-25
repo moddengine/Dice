@@ -20,15 +20,15 @@ class CreateArgsTest extends DiceTest
     public function testConstructArgs()
     {
         $obj = $this->dice->create("RequiresConstructorArgsA", ["foo", "bar"]);
-        $this->assertEquals($obj->foo, "foo");
-        $this->assertEquals($obj->bar, "bar");
+        $this->assertEquals("foo", $obj->foo);
+        $this->assertEquals("bar", $obj->bar);
     }
 
     public function testConstructArgsMixed()
     {
         $obj = $this->dice->create("RequiresConstructorArgsB", ["foo", "bar"]);
-        $this->assertEquals($obj->foo, "foo");
-        $this->assertEquals($obj->bar, "bar");
+        $this->assertEquals("foo", $obj->foo);
+        $this->assertEquals("bar", $obj->bar);
         $this->assertInstanceOf("A", $obj->a);
     }
 
@@ -46,7 +46,7 @@ class CreateArgsTest extends DiceTest
         ]);
         $this->assertInstanceOf("B", $a2->b);
         $this->assertInstanceOf("C", $a2->c);
-        $this->assertEquals($a2->foo, "Foo");
+        $this->assertEquals("Foo", $a2->foo);
     }
 
     public function testCreateArgs3()
@@ -58,7 +58,7 @@ class CreateArgsTest extends DiceTest
         ]);
         $this->assertInstanceOf("B", $a2->b);
         $this->assertInstanceOf("C", $a2->c);
-        $this->assertEquals($a2->foo, "Foo");
+        $this->assertEquals("Foo", $a2->foo);
     }
 
     public function testCreateArgs4()
@@ -69,7 +69,7 @@ class CreateArgsTest extends DiceTest
         ]);
         $this->assertInstanceOf("B", $a2->b);
         $this->assertInstanceOf("C", $a2->c);
-        $this->assertEquals($a2->foo, "Foo");
+        $this->assertEquals("Foo", $a2->foo);
     }
 
     public function testBestMatch()
@@ -118,5 +118,29 @@ class CreateArgsTest extends DiceTest
                 "PHP < 8.0.0 does not support union type hints"
             );
         }
+    }
+
+      /**
+     * Test case for issue #8
+     * @link https://github.com/moddengine/Dice/issues/8
+     */
+    public function testArrayArgConstructors() {
+        $dice = $this->dice->addRule('$defaultRenderer', [
+            'shared' => true,
+            'instanceOf' => ArrayArgRenderer::class,
+            'constructParams' => [
+                'foo',
+                [1,2,3 => ['test']],
+                'bar'
+            ]
+        ])->addRule('*', [
+            'substitutions' => [
+                ArrayArgRenderer::class => '$defaultRenderer'
+            ]
+        ]);
+        $obj = $dice->create(ArrayArgController::class);
+        $this->assertEquals('foo', $obj->renderer->a);
+        $this->assertEquals([1,2,3=>['test']], $obj->renderer->list);
+        $this->assertEquals('bar', $obj->renderer->b);
     }
 }
