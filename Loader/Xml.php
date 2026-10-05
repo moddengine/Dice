@@ -124,7 +124,7 @@ class Xml
         return $rules;
     }
 
-    public function load($xml, \Dice\Dice $dice = null, $displayWarning = true)
+    public function load($xml, ?\Dice\Dice $dice = null, $displayWarning = true)
     {
         if ($displayWarning) {
             trigger_error(

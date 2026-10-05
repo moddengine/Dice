@@ -128,7 +128,7 @@ class MethodWithDefaultNull
     public $a;
     public $b;
 
-    public function __construct(A $a, B $b = null)
+    public function __construct(A $a, ?B $b = null)
     {
         $this->a = $a;
         $this->b = $b;
@@ -155,7 +155,7 @@ class OptionalInterface
 {
     public $obj;
 
-    public function __construct(InterfaceTest $obj = null)
+    public function __construct(?InterfaceTest $obj = null)
     {
         $this->obj = $obj;
     }
@@ -163,7 +163,7 @@ class OptionalInterface
 
 class ScalarTypeHint
 {
-    public function __construct(string $a = null)
+    public function __construct(?string $a = null)
     {
     }
 }
